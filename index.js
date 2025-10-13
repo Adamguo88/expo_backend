@@ -8,28 +8,37 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
+const data = [
+  { id: 1, name: "HTML" },
+  { id: 2, name: "CSS" },
+  { id: 3, name: "JavaScript" },
+  { id: 4, name: "React" },
+  { id: 5, name: "Vue" },
+  { id: 6, name: "Angular" },
+  { id: 7, name: "PHP" },
+  { id: 8, name: "C#" },
+  { id: 9, name: "C++" },
+  { id: 10, name: "Express" },
+  { id: 11, name: "Goland" },
+  { id: 12, name: "Redis" },
+  { id: 13, name: "asp.net" },
+];
+
 app.get("/", (req, res) => {
   res.send("Express 伺服器運行中。1");
 });
 
 app.get("/api/expo", (req, res) => {
-  const data = [
-    { id: 1, name: "HTML" },
-    { id: 2, name: "CSS" },
-    { id: 3, name: "JavaScript" },
-    { id: 4, name: "React" },
-    { id: 5, name: "Vue" },
-    { id: 6, name: "Angular" },
-    { id: 7, name: "PHP" },
-    { id: 8, name: "C#" },
-    { id: 9, name: "C++" },
-    { id: 10, name: "Express" },
-    { id: 11, name: "Goland" },
-    { id: 12, name: "Redis" },
-    { id: 13, name: "asp.net" },
-  ];
+  const { search } = req.query;
 
-  res.status(200).json({ data: data });
+  if (!search) {
+    res.status(200).json({ data: data });
+    return;
+  } else {
+    const filterData = data.filter((item) => item.name.includes(search));
+    console.log(filterData);
+    res.status(200).json({ status: "success", data: filterData });
+  }
 });
 
 module.exports = app;
