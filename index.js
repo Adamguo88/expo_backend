@@ -7,6 +7,7 @@ const app = express();
 const PORT = 3000;
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
 const data = [
   { id: 1, name: "HTML" },
@@ -25,7 +26,7 @@ const data = [
 ];
 
 app.get("/", (req, res) => {
-  res.send("Express 伺服器運行中。1");
+  res.send("Express + Expo 伺服器運行中。");
 });
 
 app.get("/api/expo", (req, res) => {
