@@ -29,10 +29,22 @@ authorizationList.set("superAdmin", true); // 管理員
 
 io.on("connection", (socket) => {
   const getToken = socket.handshake.auth.token;
-  if (getToken) {
-    clientList.set(socket.id, getToken);
-    socket.emit("status", "已成功透過 /socket 路徑連線！");
+  if (getToken?.length >= 1) {
+    clientList.set(getToken, socket.id);
+    console.log(clientList);
+    socket.emit(`status", "已成功透過 /socket 路徑連線！`);
   }
+
+  socket.on("message", (msg) => {
+    const messageOwner = msg?.user;
+    const user = clientList.get(messageOwner);
+    if (user) {
+      io.to(user).emit("news", msg.message);
+      io.to(socket.id).emit("news", "傳送成功");
+    } else {
+      io.to(socket.id).emit("news", `傳送失敗，對方並不再線上 , ${new Date().toLocaleDateString("zh")}`);
+    }
+  });
 
   socket.on("disconnect", () => {
     clientList.delete(socket.id);
@@ -96,6 +108,7 @@ app.post("/api/authorization", async (req, res) => {
   if (!code || !isActivity) {
     const uuid = crypto.randomUUID();
     authorizationList.set(uuid, true);
+    console.log(authorizationList);
     res.status(200).json({ status: "new", uuid });
     return;
   }
